@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public class CoinController {
     private final TickerSinkService tickerSinkService;
 
-    @GetMapping("/health_check")
+    @GetMapping("/health-check")
     public String healthCheck(){
         return "health_check";
     }
