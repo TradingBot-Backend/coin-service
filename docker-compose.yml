@@ -1,0 +1,8 @@
+version: "3.3"
+services:
+  app:
+    container_name: "coin-info-service"
+    build: .
+    restart: always
+    ports:
+      - "8081:8081"
