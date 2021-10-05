@@ -1,5 +1,7 @@
 package com.tradingbot.coininfoservice.controller;
 
+import com.tradingbot.coininfoservice.domain.Ticker;
+import com.tradingbot.coininfoservice.service.CoinService;
 import com.tradingbot.coininfoservice.service.TickerSinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,17 +14,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CoinController {
     private final TickerSinkService tickerSinkService;
-
+    private final CoinService coinService;
     @GetMapping("/health-check")
     public String healthCheck(){
-        return "health_check";
+        return "health-check";
     }
- /*   @GetMapping("")
-    public Mono<String> getCoins(){
-        return Mono.just("coins");
-    }
-*/
-    //없는 코인이면 그거에 대한 답변 줘야징
+
+    @GetMapping(value = "/coin")
+    public Flux<String> getLatestCoinInfo(){return coinService.findLatestCoinInfo();}
+
     @GetMapping(value = "/{coin}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Flux<String> getCoinTicker(@PathVariable String coin){

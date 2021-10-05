@@ -1,23 +1,40 @@
 package com.tradingbot.coininfoservice.service;
 
+import com.tradingbot.coininfoservice.domain.Symbol;
 import com.tradingbot.coininfoservice.domain.Ticker;
 import com.tradingbot.coininfoservice.repository.CoinRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ReactiveHashOperations;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CoinServiceImpl implements CoinService {
-    private final CoinRepository coinRepository;
-
+public class CoinServiceImpl implements CoinService,InitializingBean{
+    private final RedisTemplate<String, String> redisTemplate;
+    private HashOperations<String,String,String> hashOperations;
     @Override
-    public Flux<Ticker> findDistinctTopBySymbol(String symbol) {
-        return coinRepository.findDistinctTopBySymbol(symbol);
+    public Flux<String> findLatestCoinInfo() {
+        return Flux.fromStream(Arrays.asList(
+                Symbol.values()).stream()
+                .map(symbol -> hashOperations.get(symbol.toString(),"TICKER")))
+                .distinct();
     }
-
     @Override
-    public Flux<Ticker> findDistinctLastBySymbolAfterOrderByVolumeAsc(String symbol) {
-        return coinRepository.findDistinctLastBySymbolAfterOrderByVolumeAsc(symbol);
+    public void afterPropertiesSet() throws Exception {
+        hashOperations = redisTemplate.opsForHash();
     }
 }
