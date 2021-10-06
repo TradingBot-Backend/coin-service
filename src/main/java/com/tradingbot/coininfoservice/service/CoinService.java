@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 
 @Service
 public interface CoinService {
-    Flux<String> findLatestCoinInfo();
+    Flux<Ticker> findLatestCoinInfo();
 }

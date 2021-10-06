@@ -1,5 +1,7 @@
 package com.tradingbot.coininfoservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradingbot.coininfoservice.domain.Symbol;
 import com.tradingbot.coininfoservice.domain.Ticker;
 import com.tradingbot.coininfoservice.repository.CoinRepository;
@@ -24,13 +26,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CoinServiceImpl implements CoinService,InitializingBean{
+    private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
     private HashOperations<String,String,String> hashOperations;
     @Override
-    public Flux<String> findLatestCoinInfo() {
+    public Flux<Ticker> findLatestCoinInfo() {
         return Flux.fromStream(Arrays.asList(
                 Symbol.values()).stream()
-                .map(symbol -> hashOperations.get(symbol.toString(),"TICKER")))
+                .map(symbol -> {
+                    try {
+                        return objectMapper.readValue(hashOperations.get(symbol.toString(),"TICKER"),Ticker.class);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }))
                 .distinct();
     }
     @Override
