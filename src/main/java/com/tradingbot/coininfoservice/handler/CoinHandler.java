@@ -22,7 +22,7 @@ public class CoinHandler {
     private final CoinService coinService;
 
     public Mono<ServerResponse> getLatestCoinInfo(ServerRequest request){
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(coinService.findLatestCoinInfo().sort(Comparator.comparingDouble(Ticker::getVolume).reversed())
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(coinService.findLatestCoinInfo().sort(Comparator.comparingDouble(Ticker::getValue).reversed())
                 .collectList(), ArrayList.class);
     }
     public Mono<ServerResponse> healthCheck(ServerRequest request){
