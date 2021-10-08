@@ -29,6 +29,7 @@ public class CoinServiceImpl implements CoinService,InitializingBean{
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
     private HashOperations<String,String,String> hashOperations;
+
     @Override
     public Flux<Ticker> findLatestCoinInfo() {
         return Flux.fromStream(Arrays.asList(

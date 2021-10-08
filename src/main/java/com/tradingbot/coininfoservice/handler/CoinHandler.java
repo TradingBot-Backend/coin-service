@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CoinHandler {
 
-    private final TickerSinkService tickerSinkService;
     private final CoinService coinService;
 
     public Mono<ServerResponse> getLatestCoinInfo(ServerRequest request){

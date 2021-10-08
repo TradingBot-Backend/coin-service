@@ -25,7 +25,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @EnableWebFlux
 public class WebEndpointConfig {
     private final TickerSinkService tickerSinkService;
-    private final CoinService coinService;
 
     @Bean
     public RouterFunction<ServerResponse> routing(CoinHandler coinHandler){
@@ -37,7 +36,7 @@ public class WebEndpointConfig {
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
         //Lambda로 바꾸기
-        map = Collections.singletonMap("/live/coins",
+        map = Collections.singletonMap("/ws/coins",
                 session -> session.send(tickerSinkService
                         .getTickerSink()
                         .asFlux()
