@@ -23,7 +23,7 @@ public class WebSocketConfig {
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
         //Lambda로 바꾸기
-        map = Collections.singletonMap("/coins",
+        map = Collections.singletonMap("/ws/coins",
                 session -> session.send(tickerSinkService
                         .getTickerSink()
                         .asFlux().
